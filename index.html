@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACMAN - NES Style</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/crt.css">
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="crt-overlay"></div>
+        <div id="ui-layer">
+            <div id="score-board">
+                <span>SCORE</span>
+                <span id="score">00</span>
+            </div>
+            <div id="high-score-board">
+                <span>HIGH SCORE</span>
+                <span id="high-score">00</span>
+            </div>
+        </div>
+        <div id="lives-display" style="position: absolute; bottom: 10px; left: 20px; color: white; font-family: 'Press Start 2P'; font-size: 14px; z-index: 10;">
+            LIVES: <span id="lives">3</span>
+        </div>
+        <canvas id="game-canvas"></canvas>
+    </div>
+
+    <!-- JS -->
+    <script src="js/constants.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/pacman.js"></script>
+    <script src="js/ghost.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
