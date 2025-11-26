@@ -76,9 +76,15 @@ class Ghost {
         const centerX = this.col * TILE_SIZE;
         const centerY = this.row * TILE_SIZE;
         const dist = Math.abs(this.x - centerX) + Math.abs(this.y - centerY);
-        const atCenter = dist === 0;
+
+        // Use a small threshold instead of exact 0 to handle floating point speeds
+        const atCenter = dist < 1;
 
         if (atCenter) {
+            // Snap to exact center to prevent drift
+            this.x = centerX;
+            this.y = centerY;
+
             // We are at a tile center, we can decide where to go next.
             // Ghosts look one tile ahead.
 
@@ -95,7 +101,13 @@ class Ghost {
                 if (dir.x === -this.direction.x && dir.y === -this.direction.y) continue;
 
                 // Check wall
-                if (!map.isWall(this.row + dir.y, this.col + dir.x)) {
+                let nextCol = this.col + dir.x;
+                let nextRow = this.row + dir.y;
+
+                // Handle tunnel boundaries
+                if (nextCol < 0 || nextCol >= COLS) {
+                    possibleDirections.push(dir);
+                } else if (!map.isWall(nextRow, nextCol)) {
                     possibleDirections.push(dir);
                 }
             }
@@ -111,7 +123,7 @@ class Ghost {
             if (this.mode === GHOST_MODES.FRIGHTENED) {
                 // Random choice
                 bestDir = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
-            } else {
+            } else if (target) {
                 // Target based choice
                 let minDistance = Infinity;
                 for (let dir of possibleDirections) {
@@ -132,8 +144,8 @@ class Ghost {
         }
 
         // Apply movement
-        // Frightened ghosts move slower (usually 50% speed)
-        let moveSpeed = (this.mode === GHOST_MODES.FRIGHTENED) ? this.speed * 0.5 : this.speed;
+        // Use integer speed to prevent floating point drift
+        let moveSpeed = (this.mode === GHOST_MODES.FRIGHTENED) ? 1 : this.speed;
 
         this.x += this.direction.x * moveSpeed;
         this.y += this.direction.y * moveSpeed;
