@@ -66,6 +66,8 @@ function updateGame() {
     gameTime++;
 
     // Mode Logic
+    let previousMode = currentMode;
+
     if (frightenedTime > 0) {
         frightenedTime--;
         currentMode = GHOST_MODES.FRIGHTENED;
@@ -74,6 +76,19 @@ function updateGame() {
         }
     } else {
         currentMode = (gameTime % 1620 < 420) ? GHOST_MODES.SCATTER : GHOST_MODES.CHASE;
+    }
+
+    // If mode changed from FRIGHTENED, snap ghosts to grid and reverse direction
+    if (previousMode === GHOST_MODES.FRIGHTENED && currentMode !== GHOST_MODES.FRIGHTENED) {
+        ghosts.forEach(g => {
+            // Snap to nearest grid position
+            g.col = Math.round(g.x / TILE_SIZE);
+            g.row = Math.round(g.y / TILE_SIZE);
+            g.x = g.col * TILE_SIZE;
+            g.y = g.row * TILE_SIZE;
+            // Reverse direction when exiting frightened mode
+            g.direction = { x: -g.direction.x, y: -g.direction.y };
+        });
     }
 
     // Fruit Logic (Spawn at 70 pellets)
